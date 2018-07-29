@@ -9,9 +9,18 @@ object Sudoku {
   }
 
   def parsePuzzle: Puzzle = {
-    val input = scala.io.StdIn.readLine()
-    val fieldVector = (input map Field.fromChar).toVector
+    val fieldVector = (readAllInput map Field.fromChar).toVector
     Puzzle(fieldVector)
+  }
+
+  def readAllInput: String = {
+    val line = scala.io.StdIn.readLine
+    if (line.nonEmpty) {
+      line ++ readAllInput
+    }
+    else {
+      ""
+    }
   }
 
   def printPuzzle(puzzle: Puzzle): Unit = print(puzzle.toString)

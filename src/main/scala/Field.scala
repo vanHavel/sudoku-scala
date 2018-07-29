@@ -6,7 +6,7 @@ abstract class Field {
 object Field {
   def fromChar(c: Char): Field = c match {
     case '0' => Free((1 to 9).toSet)
-    case digit => Filled(digit)
+    case digitCode => Filled(digitCode - '0')
   }
 }
 
