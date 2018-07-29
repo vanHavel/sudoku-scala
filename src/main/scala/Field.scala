@@ -6,7 +6,13 @@ abstract class Field {
 object Field {
   def fromChar(c: Char): Field = c match {
     case '0' => Free((1 to 9).toSet)
-    case digitCode => Filled(digitCode - '0')
+    case digitCode =>
+      if (digitCode >= '1' && digitCode <= '9') {
+        Filled(digitCode - '0')
+      }
+      else {
+        throw new IllegalArgumentException("Input character must be a digit, not " + c)
+      }
   }
 }
 

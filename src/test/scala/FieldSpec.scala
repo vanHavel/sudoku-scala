@@ -1,6 +1,7 @@
 import org.scalatest._
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-class FieldSpec extends FlatSpec with Matchers {
+class FieldSpec extends FlatSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   "A field created from digit 0" should "be a free field with values from 1 to 9" in {
     val field = Field.fromChar('0')
@@ -14,6 +15,12 @@ class FieldSpec extends FlatSpec with Matchers {
     field shouldBe expected
   }
 
+  "Field.fromChar" should "throw an IllegalArgumentException when fed a non-digit character" in {
+    forAll {c: Char =>
+      whenever (!Character.isDigit(c)) { an [IllegalArgumentException] should be thrownBy Field.fromChar(c)}
+    }
+  }
+
   "A free field" should "return false when asked if it is filled" in {
     val field = Free(Set(1, 5, 7))
     field.isFilled shouldBe false
@@ -24,18 +31,15 @@ class FieldSpec extends FlatSpec with Matchers {
     field.isFilled shouldBe true
   }
 
-  "A free field with no options" should "return true when asked if it is impossible" in {
-    val field = Free(Set())
-    field.isImpossible shouldBe true
-  }
-
-  "A free field with options" should "return false when asked if it is impossible" in {
-    val field = Free(Set(2, 6))
-    field.isImpossible shouldBe false
+  "A free field" should "be considered impossible if and only if it has no options" in {
+    forAll { s: Set[Int] =>
+      Free(s).isImpossible shouldBe s.isEmpty
+    }
   }
 
   "A filled field" should "return false when asked if it is impossible" in {
-    val field = Filled(6)
-    field.isImpossible shouldBe false
+    forAll { n: Int =>
+      Filled(n).isImpossible shouldBe false
+    }
   }
 }
