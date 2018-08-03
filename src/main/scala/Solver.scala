@@ -27,9 +27,11 @@ object Solver {
   def updateFields(fields: Seq[Field]): Seq[Field] = {
     val filledNumbers = fields filter (_.isFilled) map { case Filled(value) => value}
     fields map {
-      case Free(options) => Free(options -- filledNumbers)
+      case Free(options) => {
+        val updatedOptions = options -- filledNumbers
+        if (updatedOptions.size == 1) Filled(updatedOptions.head) else Free(updatedOptions)
+      }
       case Filled(value) => Filled(value)
     }
   }
-
 }
