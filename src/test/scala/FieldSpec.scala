@@ -15,9 +15,9 @@ class FieldSpec extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     field shouldBe expected
   }
 
-  "Field.fromChar" should "throw an IllegalArgumentException when fed a non-digit character" in {
+  "Field.fromChar" should "throw an IllegalArgumentException when fed a non-valid character" in {
     forAll {c: Char =>
-      whenever (!Character.isDigit(c)) { an [IllegalArgumentException] should be thrownBy Field.fromChar(c)}
+      whenever (!Field.VALID_CHARS.contains(c)) { an [IllegalArgumentException] should be thrownBy Field.fromChar(c)}
     }
   }
 

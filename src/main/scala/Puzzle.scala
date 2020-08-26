@@ -16,25 +16,46 @@ case class Puzzle(state: Vector[Field]) {
   def isImpossible: Boolean = state exists (_.isImpossible)
 
   def getIndexWithLeastOptions: Int = {
-    val freeFields = state.zipWithIndex filter (! _._1.isFilled) map { case (Free(options), index) => (options, index) }
-    freeFields.minBy(_._1.size)._2
+    val freeFields = state.zipWithIndex
+      .filter { case (field, _) => !field.isFilled }
+      .map { case (Free(options), index) => (options, index) }
+    val (_, index) = freeFields.minBy({case (options, _) => options.size})
+    index
   }
 
   override def toString: String = ((1 to 9) flatMap (
       row => getForIndices(Puzzle.rowIndices(row)) flatMap (_.toString)
     )).toString
 
+  def prettyPrint: String = {
+    def intersperse[A](each: Int, value: A, sequence: Seq[A]): Seq[A] = {
+      def intersperseAt[B](each: Int, at: Int, value: B, sequence: Seq[B]): Seq[B] =
+        if (sequence.isEmpty) sequence else at match {
+          case 0 => value +: intersperseAt(each, each, value, sequence)
+          case i => sequence.head +: intersperseAt(each, i - 1, value, sequence.tail)
+        }
+      intersperseAt(each, each, value, sequence)
+    }
+
+    val rows = (0 to 8) map (row => getForIndices(Puzzle.rowIndices(row)).flatMap(_.prettyPrint))
+    val prettyRows = rows map (row => intersperse(3, '|', row)) map (_.mkString)
+    val prettyGrid = intersperse(3, "-----------", prettyRows)
+    prettyGrid.reduce(_ ++ "\n" ++ _)
+  }
 }
 
 object Puzzle {
 
-  def rowIndices(row: Int): Seq[Int] = (9 * row) until (10 * row)
+  final val SUDOKU_CELL_COUNT = 81
+  final val SUDOKU_CELLS_PER_SECTION = 9
 
-  def colIndices(col: Int): Seq[Int] = col until 81 by 9
+  def rowIndices(row: Int): Seq[Int] = (SUDOKU_CELLS_PER_SECTION * row) until (SUDOKU_CELLS_PER_SECTION * (row + 1))
+
+  def colIndices(col: Int): Seq[Int] = col until SUDOKU_CELL_COUNT by SUDOKU_CELLS_PER_SECTION
 
   def squareIndices(square: Int): Seq[Int] = {
-    val squareStart = 27 * (square / 3) + 3 * (square % 3)
-    val rowStarts = squareStart to (squareStart + 18) by 9
+    val squareStart = 3 * SUDOKU_CELLS_PER_SECTION * (square / 3) + 3 * (square % 3)
+    val rowStarts = squareStart to (squareStart + 2 * SUDOKU_CELLS_PER_SECTION) by SUDOKU_CELLS_PER_SECTION
     rowStarts flatMap (index => index to (index + 2))
   }
 
