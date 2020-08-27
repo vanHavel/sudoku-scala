@@ -1,3 +1,5 @@
+package sudoku
+
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 

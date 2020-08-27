@@ -1,4 +1,11 @@
+package sudoku
+
+import sudoku.Puzzle.{SUDOKU_CELL_COUNT, colIndices, rowIndices, squareIndices}
+
 case class Puzzle(state: Vector[Field]) {
+
+  require(state.length == SUDOKU_CELL_COUNT)
+  require(this.isValid)
 
   def getForIndex(index: Int): Field = state(index)
 
@@ -15,6 +22,17 @@ case class Puzzle(state: Vector[Field]) {
 
   def isImpossible: Boolean = state exists (_.isImpossible)
 
+  private def isValid: Boolean = {
+    def hasUniqueFilledFields(fields: Seq[Field]): Boolean = {
+      val filled = fields filter (_.isFilled)
+      filled.toSet.size == filled.length
+    }
+
+    (0 until 9).flatMap(i => Seq(rowIndices(i), colIndices(i), squareIndices(i)))
+      .map(this.getForIndices)
+      .forall(hasUniqueFilledFields)
+  }
+
   def getIndexWithLeastOptions: Int = {
     val freeFields = state.zipWithIndex
       .filter { case (field, _) => !field.isFilled }
@@ -23,7 +41,7 @@ case class Puzzle(state: Vector[Field]) {
     index
   }
 
-  override def toString: String = ((1 to 9) flatMap (
+  override def toString: String = ((0 until 9) flatMap (
       row => getForIndices(Puzzle.rowIndices(row)) flatMap (_.toString)
     )).toString
 
@@ -58,5 +76,7 @@ object Puzzle {
     val rowStarts = squareStart to (squareStart + 2 * SUDOKU_CELLS_PER_SECTION) by SUDOKU_CELLS_PER_SECTION
     rowStarts flatMap (index => index to (index + 2))
   }
+
+  def fromString(string: String): Puzzle = Puzzle(string.toVector.map(Field.fromChar))
 
 }

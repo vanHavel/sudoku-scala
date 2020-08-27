@@ -1,9 +1,10 @@
+package sudoku
+
 object Solver {
 
   def solve(puzzle: Puzzle): Option[Puzzle] = {
     val updatedPuzzle = updatePuzzle(puzzle)
     if (updatedPuzzle.isImpossible) { None }
-    else if (updatedPuzzle != puzzle) { solve(updatedPuzzle) }
     else if (updatedPuzzle.isSolved) { Some(updatedPuzzle) }
     else {
       val backtrackIndex = updatedPuzzle.getIndexWithLeastOptions
@@ -35,7 +36,7 @@ object Solver {
     fields map {
       case Free(options) =>
         val updatedOptions = options -- filledNumbers
-        if (updatedOptions.size == 1) Filled(updatedOptions.head) else Free(updatedOptions)
+        Free(updatedOptions)
       case Filled(value) => Filled(value)
     }
   }

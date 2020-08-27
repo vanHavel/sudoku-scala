@@ -1,3 +1,5 @@
+package sudoku
+
 abstract class Field {
   def isFilled: Boolean
   def isImpossible: Boolean

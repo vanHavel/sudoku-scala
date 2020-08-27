@@ -1,6 +1,8 @@
+package sudoku
+
 object Sudoku {
 
-  def main(args: Array[String] ) {
+  def main(args: Array[String]) {
     val input = readAllInput
     parsePuzzle(input) match {
       case None => println("Invalid puzzle input.")
