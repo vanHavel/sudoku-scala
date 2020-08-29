@@ -8,6 +8,7 @@ abstract class Field {
 
 object Field {
   final val VALID_CHARS = ('0' to '9').toSet
+
   def fromChar(c: Char): Field = {
     require(VALID_CHARS contains c)
     c match {

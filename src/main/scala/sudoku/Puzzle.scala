@@ -77,6 +77,8 @@ object Puzzle {
     rowStarts flatMap (index => index to (index + 2))
   }
 
-  def fromString(string: String): Puzzle = Puzzle(string.toVector.map(Field.fromChar))
-
+  def fromString(string: String): Puzzle = {
+    val filtered = string filter Field.VALID_CHARS.contains
+    Puzzle(filtered.toVector.map(Field.fromChar))
+  }
 }
