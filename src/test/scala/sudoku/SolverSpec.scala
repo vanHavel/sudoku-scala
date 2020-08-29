@@ -4,6 +4,7 @@ import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 trait testPuzzles {
+  // sudokus with solutins taken from http://lipas.uwasa.fi/~timan/sudoku/
   val puzzle1: Puzzle = Puzzle.fromString("002000500010705020400090007049000730801030409036000210200080004080902060007000800")
   val solution1: Puzzle = Puzzle.fromString("972863541618745923453291687549128736821637459736459218295386174184972365367514892")
   val puzzle2: Puzzle = Puzzle.fromString("000000000079050180800000007007306800450708096003502700700000005016030420000000000")

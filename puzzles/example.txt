@@ -1,3 +1,4 @@
+// taken from https://github.com/dimitri/sudoku released under WTFPL
 003|020|600
 900|305|001
 001|806|400
